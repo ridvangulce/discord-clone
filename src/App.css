@@ -1,6 +1,8 @@
 *{
   margin:0;
+  overflow:scroll;
 }
 .app{
   display:flex;
+
 }

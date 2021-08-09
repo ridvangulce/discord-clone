@@ -1,9 +1,10 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    flex: .25;
+    flex: .35;
     height: 100vh;
     background-color: #2f3135;
+    overflow: auto;
 }
 
 .sidebar__top {
@@ -35,7 +36,7 @@
     transition: .3s;
 }
 
-.sidebar__voiceIconsCall:hover {
+.sidebar__voiceIconsCamera:hover {
     color: white;
     transition: .3s;
 

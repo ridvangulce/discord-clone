@@ -19,24 +19,69 @@ const Chat = () => {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState([]);
     useEffect(() => {
-            if (channelId) {
-                db.collection("channels")
-                    .doc(channelId).collection('messages')
-                    .orderBy("timestamp", 'desc')
-                    .onSnapshot(snapshot => (
-                        setMessages(snapshot.docs.map(doc => doc.data()))
-                    ));
+        if (channelId) {
+            db.collection("channels")
+                .doc(channelId).collection('messages')
+                .orderBy("timestamp", 'desc')
+                .onSnapshot(snapshot => (
+                    setMessages(snapshot.docs.map(doc => doc.data()))
+                ));
+        }
+    }, [channelId])
+    const [locations, setLocations] = useState({
+        loaded: false,
+        coordinates:
+            {
+                lat: "",
+                lng: ""
             }
-        }, [channelId])
-    const sendMessage = e=>{
+    });
+    const Locations = (locations) => {
+        setLocations({
+            loaded: true,
+            coords: {
+                lat: locations.coords.latitude,
+                lng: locations.coords.longitude
+            }
+        });
+
+    };
+    const onError = (error) => {
+        setLocations({
+            loaded: true,
+            error,
+        });
+    };
+    useEffect(() => {
+        if (!("geolocation" in navigator)) {
+            onError()
+            setLocations(state => ({
+                ...state,
+                loaded: true,
+                error: {
+                    code: 0,
+                    message: "Geolocation not supported"
+                }
+            }))
+        }
+        navigator.geolocation.getCurrentPosition(Locations, onError)
+    }, [])
+
+    const sendMessage = e => {
         e.preventDefault()
         db.collection("channels")
-            .doc(channelId)
-            .collection("messages")
+            .doc(channelId).collection("messages")
             .add({
-                message:input,
-                user:user,
-                timestamp:firebase.firestore.FieldValue.serverTimestamp()
+                message: input,
+                user: user,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                locations: locations.coords
+            })
+            .then((docRef) => {
+                console.log("Document written with ID: ", docRef.id);
+            })
+            .catch((error) => {
+                console.error("Error adding document: ", error);
             });
         setInput("");
     }
@@ -46,9 +91,10 @@ const Chat = () => {
             <div className="chat__messages">
                 {messages.map((message) => (
                     <Message
-                    timestamp={message.timestamp}
-                    message={message.message}
-                    user={message.user}
+                        timestamp={message.timestamp}
+                        message={message.message}
+                        user={message.user}
+                        locations={locations.coords}
                     />
                 ))}
 

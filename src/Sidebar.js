@@ -6,22 +6,26 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import AddIcon from "@material-ui/icons/Add";
 import SignalCellularAltIcon from "@material-ui/icons/SignalCellularAlt";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
-import CallIcon from "@material-ui/icons/Call"
 import {Avatar} from "@material-ui/core";
 import MicIcon from "@material-ui/icons/Mic"
 import HeadsetIcon from "@material-ui/icons/Headset"
 import SettingsIcon from "@material-ui/icons/Settings"
 import {useSelector} from "react-redux";
 import {selectUser} from "./features/userSlice";
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import db, {auth} from "./firebase";
+import VideoChat from "./VideoChat";
 
-const Sidebar = ({login}) => {
+
+const Sidebar = () => {
     const [channels, setChannels] = useState([]);
-    const handleAddChannel =()=>{
-        const channelName=prompt("Enter New Channel Name");
-        if(channelName){
+    const [videoChat, setVideoChat] = useState(false)
+    const onClick = () => setVideoChat(!videoChat);
+    const handleAddChannel = () => {
+        const channelName = prompt("Enter New Channel Name");
+        if (channelName) {
             db.collection('channels').add({
-                channelName:channelName
+                channelName: channelName
             })
         }
     }
@@ -34,6 +38,7 @@ const Sidebar = ({login}) => {
             );
         })
     }, [])
+
     const user = useSelector(selectUser)
     return (
         <div className="sidebar">
@@ -53,7 +58,7 @@ const Sidebar = ({login}) => {
                     </IconButton>
                 </div>
                 <div className="sidebar__channelsList">
-                    {channels.map(({id,channel})=>(
+                    {channels.map(({id, channel}) => (
                         <SidebarChannel key={id} id={id} channelName={channel.channelName}/>
                     ))}
                 </div>
@@ -72,11 +77,14 @@ const Sidebar = ({login}) => {
                         <InfoOutlinedIcon className="sidebar__voiceIconsInfo"/>
                     </IconButton>
                     <IconButton>
-                        <CallIcon className="sidebar__voiceIconsCall"/>
+                        <PhotoCameraIcon className="sidebar__voiceIconsCamera"
+                                         onClick={onClick}
+                        />
                     </IconButton>
 
                 </div>
             </div>
+            {videoChat === true && <VideoChat/>}
             <div className="sidebar__profile">
                 <IconButton>
                     <Avatar onClick={() => auth.signOut()} src={user.photo}/>
@@ -95,8 +103,6 @@ const Sidebar = ({login}) => {
                     <IconButton>
                         <SettingsIcon className="sidebar__profileIconsSettings"/>
                     </IconButton>
-
-
                 </div>
             </div>
         </div>

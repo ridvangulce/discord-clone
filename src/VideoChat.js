@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState,createContext} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import PhoneIcon from "@material-ui/icons/Phone"
@@ -27,7 +27,9 @@ const VideoChat = () => {
     const connectionRef = useRef()
     const user = useSelector(selectUser)
 
+
     useEffect(() => {
+
         navigator.mediaDevices.getUserMedia({
             video: true,
             audio: true
@@ -37,6 +39,7 @@ const VideoChat = () => {
                 setStream(stream)
                 myVideo.current.srcObject = stream
             })
+
         socket.on("me", (id) => {
             setMe(id)
         })
@@ -98,15 +101,21 @@ const VideoChat = () => {
         window.location.reload();
     }
 
+    //Remote State
+
+
+
+
     return (
         <div className="container">
             <div className="video-container">
                 <div className="video">
-                    {stream && <video playsInline muted ref={myVideo} autoPlay style={{width: "300px",height:"225px"}}/>}
+                    {stream &&
+                    <video playsInline muted ref={myVideo} autoPlay style={{width: "300px", height: "225px"}}/>}
                 </div>
                 <div className="video">
                     {callAccepted && !callEnded ?
-                        <video playsInline ref={userVideo} autoPlay style={{width: "300px",height:"225px"}}/> :
+                        <video playsInline ref={userVideo} autoPlay style={{width: "300px", height: "225px"}}/> :
                         null
                     }
                 </div>
@@ -157,19 +166,19 @@ const VideoChat = () => {
             </div>
             <div>
                 {receivingCall && !callAccepted ? (
-                        <div className="caller">
-                            <h1>{user.displayName} is calling</h1>
-                            <Button
+                    <div className="caller">
+                        <h1>{user.displayName} is calling</h1>
+                        <Button
 
-                                variant="contained"
-                                color="primary"
-                                onClick={answerCall}
-                            >
-                                Answer
-                            </Button>
-                        </div>
+                            variant="contained"
+                            color="primary"
+                            onClick={answerCall}
+                        >
+                            Answer
+                        </Button>
+                    </div>
 
-                    ) : null
+                ) : null
                 }
             </div>
         </div>

@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react';
+import {useSelector} from "react-redux";
+import {selectUser} from "./features/userSlice";
 import SidebarChannel from "./SidebarChannel"
 import "./Sidebar.css"
 import {IconButton} from "@material-ui/core"
@@ -10,8 +12,6 @@ import {Avatar} from "@material-ui/core";
 import MicIcon from "@material-ui/icons/Mic"
 import HeadsetIcon from "@material-ui/icons/Headset"
 import SettingsIcon from "@material-ui/icons/Settings"
-import {useSelector} from "react-redux";
-import {selectUser} from "./features/userSlice";
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import db, {auth} from "./firebase";
 import VideoChat from "./VideoChat";
